@@ -1,0 +1,30 @@
+
+- name: Backup running config for Juniper device
+  hosts: vjunos
+  gather_facts: no
+  vars:
+    backup_dir: backups
+
+  tasks:
+    - name: Ensure backups directory exists locally
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+
+    - name: Get Juniper running config
+      junos_command:
+        commands:
+          - show configuration | display set
+      register: result
+
+    - name: Save running config to file locally
+      copy:
+        content: "{{ result.stdout[0] }}"
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}_running.txt"
+      delegate_to: localhost
+
+    - name: Debug the result variable
+      debug:
+        var: result
