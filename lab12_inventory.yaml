@@ -18,6 +18,6 @@ all:
           ansible_host: 192.168.1.2
           ansible_user: admin
           ansible_password: lab123
-          ansible_connection: network_cli
+          ansible_connection: netconf
           ansible_network_os: junos
           device_type: juniper_junos
