@@ -1,0 +1,13 @@
+- name: Verify VLANs on Cisco IOS devices
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Run 'show vlan brief' to get VLAN info
+      ios_command:
+        commands:
+          - show vlan brief
+      register: vlan_output
+
+    - name: Display VLAN information
+      debug:
+        var: vlan_output.stdout_lines
