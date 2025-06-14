@@ -1,0 +1,25 @@
+- name: Verify hostname and interface configuration on Juniper
+  hosts: vjunos
+  gather_facts: no
+  connection: netconf
+  tasks:
+
+    - name: Show hostname
+      junipernetworks.junos.junos_command:
+        commands:
+          - show configuration system host-name
+      register: hostname_output
+
+    - name: Display hostname
+      debug:
+        msg: "{{ hostname_output.stdout[0] }}"
+
+    - name: Show interface ge-0/0/1 config
+      junipernetworks.junos.junos_command:
+        commands:
+          - show configuration interfaces ge-0/0/1
+      register: interface_output
+
+    - name: Display interface configuration
+      debug:
+        msg: "{{ interface_output.stdout[0] }}"
