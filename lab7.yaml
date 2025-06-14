@@ -1,0 +1,14 @@
+- name: Configure hostname and interface on Juniper
+  hosts: vjunos
+  gather_facts: no
+  connection: netconf    # Required for junos modules
+  tasks:
+    - name: Set hostname
+      junipernetworks.junos.junos_config:
+        lines:
+          - set system host-name BRANCH1
+
+    - name: Configure interface
+      junipernetworks.junos.junos_config:
+        lines:
+          - set interfaces ge-0/0/1 unit 0 family inet dhcp
