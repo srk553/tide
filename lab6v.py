@@ -11,7 +11,7 @@ device = {
 net_connect = ConnectHandler(**device)
 net_connect.enable()
 
-output = net_connect.send_command("show runnig-configuration | include hostname")
+output = net_connect.send_command("show running-configuration | include hostname")
 print(output)
 
 net_connect.disconnect()
