@@ -1,0 +1,17 @@
+
+- name: Validate NTP server on Cisco
+  hosts: cisco
+  gather_facts: no
+  connection: network_cli
+  tasks:
+    - name: Check NTP on Cisco
+      check_mode: yes
+      ios_config:
+        lines:
+          - ntp server 192.168.100.1
+        match: line
+      register: ntp_check_cisco
+
+    - name: Cisco NTP compliance result
+      debug:
+        msg: "Cisco is {{ 'compliant' if not ntp_check_cisco.changed else 'non-compliant' }}"
