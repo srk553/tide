@@ -1,0 +1,31 @@
+- name: Backup running config for Cisco device (csr1)
+  hosts: csr1
+  gather_facts: no
+  vars:
+    backup_dir: backups
+
+  tasks:
+    - name: Ensure backups directory exists locally
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+
+    - name: Get Cisco running config
+      ios_command:
+        commands: show running-config
+      register: result
+      when: ansible_network_os == 'ios'
+
+    - name: Save running config to file locally
+      copy:
+        content: "{{ (result.stdout | default([]))[0] }}"
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}_running.txt"
+      delegate_to: localhost
+      when: result is defined and (result.stdout is defined and result.stdout | length > 0)
+
+    - name: Debug the result variable
+      debug:
+        var: result
+      when: result is defined
