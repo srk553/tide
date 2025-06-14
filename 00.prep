@@ -138,3 +138,21 @@ set system login user admin class super-user
 commit
 
 ssh -o MACs=hmac-sha2-256,hmac-sha2-512 admin@192.168.1.2
+
+---------------------------
+# nat on SRK
+
+# Internal zone: trust
+# External zone: untrust
+# Internal subnet: 192.168.1.0/24
+# Outgoing interface: ge-0/0/1
+
+
+set security zones security-zone trust interfaces ge-0/0/0
+set security zones security-zone untrust interfaces ge-0/0/1
+
+set security nat source rule-set RS-NAT from zone trust
+set security nat source rule-set RS-NAT to zone untrust
+set security nat source rule-set RS-NAT rule NAT-ALL match source-address 192.168.1.0/24
+set security nat source rule-set RS-NAT rule NAT-ALL match destination-address 0.0.0.0/0
+set security nat source rule-set RS-NAT rule NAT-ALL then source-nat interface
