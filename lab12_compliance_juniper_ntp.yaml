@@ -1,0 +1,16 @@
+- name: Validate NTP server on Juniper
+  hosts: juniper
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Check NTP on Juniper
+      check_mode: yes
+      junos_config:
+        lines:
+          - set system ntp server 192.168.100.1
+      register: ntp_check_junos
+
+    - name: Juniper NTP compliance result
+      debug:
+        msg: "Juniper is {{ 'compliant' if not ntp_check_junos.changed else 'non-compliant' }}"
