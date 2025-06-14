@@ -1,0 +1,23 @@
+all:
+  children:
+    cisco:
+      hosts:
+        csr1:
+          ansible_host: 192.168.1.1
+          ansible_user: admin
+          ansible_password: lab123
+          ansible_connection: network_cli
+          ansible_network_os: ios
+          ansible_become: true
+          ansible_become_method: enable
+          device_type: cisco_ios
+
+    juniper:
+      hosts:
+        vjunos:
+          ansible_host: 192.168.1.2
+          ansible_user: admin
+          ansible_password: lab123
+          ansible_connection: network_cli
+          ansible_network_os: junos
+          device_type: juniper_junos
