@@ -7,6 +7,7 @@ all:
           ansible_network_os: ios
           ansible_user: admin
           ansible_password: lab123
+          ansible_connection: network_cli
     juniper:
       hosts:
         vjunos:
