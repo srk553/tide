@@ -1,0 +1,124 @@
+R1 config
+--------------------------------------
+en
+conf t
+interface ethernet 0/0
+ip address 192.168.1.1 255.255.255.0
+ip nat inside
+no shutdown
+
+interface ethernet 0/1
+ip address dhcp
+ip nat outside
+no shutdown
+
+hostname R1
+ip domain name R1.local
+crypto key generate rsa modulus 1024
+ip ssh version 2
+username admin privilege 15 password lab123
+
+line vty 0 4
+login local
+transport input ssh
+
+access-list 10 permit 192.168.1.0 0.0.0.255
+ip nat inside source list 10 interface ethernet 0/1 overload
+
+end
+wr
+
+Host 1 config
+------------------------------------------------
+
+ip addr add 192.168.1.100/24 dev eth1
+sudo ip route add default via 192.168.1.1
+
+or
+
+ifconfig eth1 192.168.1.100 netmask 255.255.255.0
+route add default gw 192.168.1.1
+
+ip a
+ifconfig
+
+ip route
+route -n
+
+ping google.com
+
+
+Dist Switch 1 Config
+----------------------------------------------------
+
+
+enable
+configure terminal
+hostname DIST_SW1
+
+interface vlan 1
+ip address 192.168.1.20 255.255.255.0
+no shutdown
+exit
+ip default-gateway 192.168.1.1
+ip domain name DIST.local
+crypto key generate rsa modulus 1024
+ip ssh version 2
+
+username admin privilege 15 password lab123
+
+line vty 0 4
+login local
+transport input ssh
+end
+write memory
+
+------
+Core Switch config
+--------------------------------------------------
+
+enable
+configure terminal
+hostname CORE_SW1
+
+interface vlan 1
+ip address 192.168.1.10 255.255.255.0
+no shutdown
+exit
+ip default-gateway 192.168.1.1
+ip domain name CORE_SW1.local
+crypto key generate rsa modulus 1024
+ip ssh version 2
+
+username admin privilege 15 password lab123
+
+line vty 0 4
+login local
+transport input ssh
+end
+write memory
+
+
+--------------------
+initial srx setup
+
+cli
+configure
+set system root-authentication plain-text-password
+set system host-name srx-device
+
+set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.2/24
+set security zones security-zone mgmt interfaces ge-0/0/0.0
+set security zones security-zone mgmt host-inbound-traffic system-services ssh
+set security zones security-zone mgmt host-inbound-traffic system-services netconf
+set security zones security-zone mgmt host-inbound-traffic system-services ping
+
+set system services ssh
+set system services netconf ssh
+
+set routing-options static route 0.0.0.0/0 next-hop 192.168.1.1
+set system login user admin authentication plain-text-password
+set system login user admin class super-user
+commit
+
+ssh -o MACs=hmac-sha2-256,hmac-sha2-512 admin@192.168.1.2
