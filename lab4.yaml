@@ -1,0 +1,10 @@
+- name: Configure VLANs on Cisco devices
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Create VLAN 30
+      ios_config:
+        lines:
+          - name Engineering
+          - state active
+        parents: vlan 30
