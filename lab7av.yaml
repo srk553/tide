@@ -1,0 +1,35 @@
+- name: Verify hostname and interface configuration on IOS device
+  hosts: csr1
+  gather_facts: no
+  connection: network_cli
+
+  tasks:
+    - name: Show hostname from running config
+      ios_command:
+        commands:
+          - show running-config | include hostname
+      register: hostname_output
+
+    - name: Display hostname
+      debug:
+        msg: "{{ hostname_output.stdout[0] }}"
+
+    - name: Show interface e0/2 config
+      ios_command:
+        commands:
+          - show running-config interface e0/2
+      register: int_e02_output
+
+    - name: Display interface e0/2 config
+      debug:
+        msg: "{{ int_e02_output.stdout[0] }}"
+
+    - name: Show interface e0/3 config
+      ios_command:
+        commands:
+          - show running-config interface e0/3
+      register: int_e03_output
+
+    - name: Display interface e0/3 config
+      debug:
+        msg: "{{ int_e03_output.stdout[0] }}"
