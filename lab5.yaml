@@ -1,0 +1,10 @@
+- name: Create VLANs using templates
+  hosts: all
+  vars:
+    vlan_id: 40
+    vlan_name: Guest
+
+  tasks:
+    - name: Apply VLAN config
+      ios_config:
+        template: lab5_vlan_template.j2
