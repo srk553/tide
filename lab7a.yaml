@@ -1,0 +1,24 @@
+- name: Configure IOS device interfaces using template
+  hosts: csr1
+  gather_facts: no
+  vars:
+    hostname: R1
+    interfaces:
+      - name: e0/2
+        desc: LAN1
+        ip: 10.10.10.10
+        mask: 255.255.255.0
+      - name: e0/3
+        desc: LAN2
+        ip: 10.20.20.20
+        mask: 255.255.255.0
+
+  tasks:
+    - name: Render interface config to file
+      template:
+        src: lab7a_interface_template.j2
+        dest: /tmp/interface_config.cfg
+
+    - name: Push interface configuration from rendered file
+      ios_config:
+        src: /tmp/interface_config.cfg
