@@ -12,6 +12,10 @@ net_connect = ConnectHandler(**device)
 # Enter configuration mode
 net_connect.config_mode()
 
+# Read the hostname
+output = net_connect.send_command("show configuration system host-name")
+print(output)
+
 # Set the hostname
 net_connect.send_config_set(['set system host-name juniper-r1'])
 
