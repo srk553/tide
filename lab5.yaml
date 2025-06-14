@@ -5,6 +5,11 @@
     vlan_name: Guest
 
   tasks:
-    - name: Apply VLAN config
+    - name: Render VLAN template to file
+      template:
+        src: lab5_vlan_template.j2
+        dest: vlan_{{ vlan_id }}.cfg
+
+    - name: Apply VLAN config from rendered template
       ios_config:
-        template: lab5_vlan_template.j2
+        src: vlan_{{ vlan_id }}.cfg
